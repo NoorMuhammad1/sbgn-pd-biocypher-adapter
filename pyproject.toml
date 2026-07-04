@@ -1,0 +1,53 @@
+[project]
+name = "sbgn-pd-biocypher-adapter"
+version = "0.1.0"
+description = "A BioCypher adapter for SBGN Process Description (SBGN-PD) pathway data. Builds Biolink-aligned biomedical knowledge graphs from SBGN-ML files with tunable entity matching across sources."
+authors = [
+    {name = "Noor Muhammad", email = "nmuhammad0900@gmail.com"},
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "biocypher>=0.5,<0.10",
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "ruff>=0.4",
+    "mypy>=1.8",
+]
+
+[project.urls]
+Repository = "https://github.com/NoorMuhammad1/sbgn-pd-biocypher-adapter"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["sbgn_pd_adapter"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+strict_optional = true
+warn_return_any = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --strict-markers"

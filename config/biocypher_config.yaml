@@ -1,0 +1,28 @@
+# BioCypher runtime configuration for the SBGN-PD adapter pipeline.
+#
+# Offline mode writes admin-import CSVs. To load into a running Neo4j, run
+#   `neo4j-admin database import full`
+# with the paths from biocypher-out/. See docs/example_cypher_queries.md.
+#
+# Kept minimal on purpose. BioCypher's own defaults handle the Biolink model
+# lookup; overriding here only invites drift when the model URL changes
+# upstream. The two neo4j-specific keys mirror what the BioCypher project
+# template uses.
+
+biocypher:
+  dbms: neo4j
+  offline: true
+  debug: false
+  schema_config_path: config/schema_config.yaml
+  cache_directory: .biocypher_cache
+  log_to_disk: true
+
+neo4j:
+  delimiter: '\t'
+  array_delimiter: "|"
+  skip_duplicate_nodes: true
+  skip_bad_relationships: true
+  # kept for future online-mode toggle
+  uri: bolt://localhost:7687
+  user: neo4j
+  password: neo4j

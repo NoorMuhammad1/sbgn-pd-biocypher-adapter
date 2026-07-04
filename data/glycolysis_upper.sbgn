@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<sbgn xmlns="http://sbgn.org/libsbgn/0.2">
+    <!--
+    Upper glycolysis fragment. Hexokinase (HK2) phosphorylates alpha-D-glucose
+    to glucose-6-phosphate, with ATP as the phosphate donor. This is a compact
+    but real SBGN-PD sample used to exercise the adapter's node, arc, and
+    entity-matching paths across two source files.
+    -->
+    <map language="process description">
+        <!-- Compartment -->
+        <glyph class="compartment" id="cytosol">
+            <label text="cytosol"/>
+            <bbox x="0" y="0" w="600" h="400"/>
+        </glyph>
+
+        <!-- Entity pool nodes -->
+        <glyph class="simple chemical" id="glucose" compartmentRef="cytosol">
+            <label text="alpha-D-glucose"/>
+            <bbox x="40" y="80" w="80" h="40"/>
+            <annotation resource="CHEBI:17925"/>
+        </glyph>
+
+        <glyph class="simple chemical" id="atp_upper" compartmentRef="cytosol">
+            <label text="ATP"/>
+            <bbox x="40" y="180" w="80" h="40"/>
+            <annotation resource="CHEBI:15422"/>
+        </glyph>
+
+        <glyph class="simple chemical" id="g6p" compartmentRef="cytosol">
+            <label text="D-glucose 6-phosphate"/>
+            <bbox x="360" y="80" w="120" h="40"/>
+            <annotation resource="CHEBI:17665"/>
+        </glyph>
+
+        <glyph class="simple chemical" id="adp_upper" compartmentRef="cytosol">
+            <label text="ADP"/>
+            <bbox x="360" y="180" w="80" h="40"/>
+            <annotation resource="CHEBI:16761"/>
+        </glyph>
+
+        <glyph class="macromolecule" id="hk2" compartmentRef="cytosol">
+            <label text="HK2"/>
+            <bbox x="220" y="20" w="80" h="40"/>
+            <annotation resource="UniProt:P52789"/>
+        </glyph>
+
+        <!-- Process node (reified) -->
+        <glyph class="process" id="phosphorylation_1" compartmentRef="cytosol">
+            <label text="glucose phosphorylation"/>
+            <bbox x="240" y="120" w="40" h="40"/>
+        </glyph>
+
+        <!-- Arcs -->
+        <arc class="consumption" id="arc_glucose_in" source="glucose" target="phosphorylation_1">
+            <start x="120" y="100"/>
+            <end x="240" y="140"/>
+        </arc>
+        <arc class="consumption" id="arc_atp_in" source="atp_upper" target="phosphorylation_1">
+            <start x="120" y="200"/>
+            <end x="240" y="160"/>
+        </arc>
+        <arc class="production" id="arc_g6p_out" source="phosphorylation_1" target="g6p">
+            <start x="280" y="140"/>
+            <end x="360" y="100"/>
+        </arc>
+        <arc class="production" id="arc_adp_out" source="phosphorylation_1" target="adp_upper">
+            <start x="280" y="160"/>
+            <end x="360" y="200"/>
+        </arc>
+        <arc class="catalysis" id="arc_hk2_cat" source="hk2" target="phosphorylation_1">
+            <start x="260" y="60"/>
+            <end x="260" y="120"/>
+        </arc>
+    </map>
+</sbgn>

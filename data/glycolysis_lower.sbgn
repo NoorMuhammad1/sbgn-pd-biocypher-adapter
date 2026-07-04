@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<sbgn xmlns="http://sbgn.org/libsbgn/0.2">
+    <!--
+    Lower glycolysis fragment from a different (hypothetical) source. Uses
+    slightly different labels for shared metabolites (D-glucose 6-phosphate
+    vs "glucose-6-phosphate"; ATP appears again with the same ChEBI ref) so
+    the SimilarityThresholdMatcher has something real to match on.
+
+    Reaction: phosphoglucose isomerase (GPI / G6PI) interconverts G6P and F6P.
+    -->
+    <map language="process description">
+        <glyph class="compartment" id="cytosol_b">
+            <label text="cytosol"/>
+            <bbox x="0" y="0" w="600" h="400"/>
+        </glyph>
+
+        <!-- Same entity, different label style. Same ChEBI ref -->
+        <glyph class="simple chemical" id="g6p_b" compartmentRef="cytosol_b">
+            <label text="glucose-6-phosphate"/>
+            <bbox x="40" y="80" w="120" h="40"/>
+            <annotation resource="CHEBI:17665"/>
+        </glyph>
+
+        <glyph class="simple chemical" id="f6p" compartmentRef="cytosol_b">
+            <label text="fructose 6-phosphate"/>
+            <bbox x="360" y="80" w="120" h="40"/>
+            <annotation resource="CHEBI:15946"/>
+        </glyph>
+
+        <glyph class="macromolecule" id="gpi" compartmentRef="cytosol_b">
+            <label text="GPI"/>
+            <bbox x="220" y="20" w="80" h="40"/>
+            <annotation resource="UniProt:P06744"/>
+        </glyph>
+
+        <!-- ATP entity that overlaps with the upper-glycolysis file. Same ChEBI
+             but different label style so the matcher gets a mixed signal. -->
+        <glyph class="simple chemical" id="atp_lower" compartmentRef="cytosol_b">
+            <label text="ATP"/>
+            <bbox x="500" y="200" w="80" h="40"/>
+            <annotation resource="CHEBI:15422"/>
+        </glyph>
+
+        <glyph class="process" id="isomerisation" compartmentRef="cytosol_b">
+            <label text="G6P to F6P isomerisation"/>
+            <bbox x="240" y="120" w="40" h="40"/>
+        </glyph>
+
+        <!-- Downstream reaction: phosphofructokinase-1 -->
+        <glyph class="macromolecule" id="pfk1" compartmentRef="cytosol_b">
+            <label text="PFK1"/>
+            <bbox x="220" y="240" w="80" h="40"/>
+            <annotation resource="UniProt:P17858"/>
+        </glyph>
+
+        <glyph class="simple chemical" id="f16bp" compartmentRef="cytosol_b">
+            <label text="fructose 1,6-bisphosphate"/>
+            <bbox x="360" y="300" w="140" h="40"/>
+            <annotation resource="CHEBI:16905"/>
+        </glyph>
+
+        <glyph class="process" id="phosphorylation_2" compartmentRef="cytosol_b">
+            <label text="F6P phosphorylation"/>
+            <bbox x="240" y="320" w="40" h="40"/>
+        </glyph>
+
+        <arc class="consumption" id="arc_g6p_in_b" source="g6p_b" target="isomerisation">
+            <start x="160" y="100"/>
+            <end x="240" y="140"/>
+        </arc>
+        <arc class="production" id="arc_f6p_out" source="isomerisation" target="f6p">
+            <start x="280" y="140"/>
+            <end x="360" y="100"/>
+        </arc>
+        <arc class="catalysis" id="arc_gpi_cat" source="gpi" target="isomerisation">
+            <start x="260" y="60"/>
+            <end x="260" y="120"/>
+        </arc>
+
+        <arc class="consumption" id="arc_f6p_in_2" source="f6p" target="phosphorylation_2">
+            <start x="380" y="120"/>
+            <end x="280" y="340"/>
+        </arc>
+        <arc class="consumption" id="arc_atp_in_2" source="atp_lower" target="phosphorylation_2">
+            <start x="540" y="240"/>
+            <end x="280" y="340"/>
+        </arc>
+        <arc class="production" id="arc_f16bp_out" source="phosphorylation_2" target="f16bp">
+            <start x="280" y="340"/>
+            <end x="360" y="320"/>
+        </arc>
+        <arc class="catalysis" id="arc_pfk1_cat" source="pfk1" target="phosphorylation_2">
+            <start x="260" y="280"/>
+            <end x="260" y="320"/>
+        </arc>
+    </map>
+</sbgn>

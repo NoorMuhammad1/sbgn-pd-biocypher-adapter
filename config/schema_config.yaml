@@ -1,0 +1,207 @@
+# BioCypher schema configuration for the SBGN-PD adapter.
+#
+# Every top-level key is a Biolink category or predicate that the KG will
+# contain. `is_a` walks the Biolink hierarchy so downstream queries can search
+# by superclass (BiologicalEntity finds everything, MacromolecularMachineMixin
+# finds proteins and RNA products, etc.).
+#
+# The `input_label` values must match exactly the labels the adapter's
+# get_nodes() and get_edges() emit. If you rename a category here, also update
+# biolink_mapper.GLYPH_TO_BIOLINK / ARC_TO_BIOLINK.
+
+# -------------------------------------------------------------------- nodes
+
+biological entity:
+  represented_as: node
+  input_label: biolink:BiologicalEntity
+  is_a: named thing
+  preferred_id: id
+  properties:
+    label: str
+    sbgn_glyph_class: str
+    compartment: str
+    parent_id: str
+    source_file: str
+    annotations: str
+    merged_from: str
+
+macromolecular machine mixin:
+  represented_as: node
+  input_label: biolink:MacromolecularMachineMixin
+  is_a: biological entity
+  preferred_id: id
+  properties:
+    label: str
+    sbgn_glyph_class: str
+    compartment: str
+    parent_id: str
+    source_file: str
+    annotations: str
+    merged_from: str
+
+small molecule:
+  represented_as: node
+  input_label: biolink:SmallMolecule
+  is_a: molecular entity
+  preferred_id: id
+  properties:
+    label: str
+    sbgn_glyph_class: str
+    compartment: str
+    parent_id: str
+    source_file: str
+    annotations: str
+    merged_from: str
+
+chemical mixture:
+  represented_as: node
+  input_label: biolink:ChemicalMixture
+  is_a: molecular entity
+  preferred_id: id
+  properties:
+    label: str
+    sbgn_glyph_class: str
+    compartment: str
+    source_file: str
+
+nucleic acid entity:
+  represented_as: node
+  input_label: biolink:NucleicAcidEntity
+  is_a: molecular entity
+  preferred_id: id
+  properties:
+    label: str
+    sbgn_glyph_class: str
+    compartment: str
+    source_file: str
+    annotations: str
+    merged_from: str
+
+macromolecular complex:
+  represented_as: node
+  input_label: biolink:MacromolecularComplex
+  is_a: macromolecular machine mixin
+  preferred_id: id
+  properties:
+    label: str
+    sbgn_glyph_class: str
+    compartment: str
+    parent_id: str
+    source_file: str
+    annotations: str
+    merged_from: str
+
+chemical or drug or treatment:
+  represented_as: node
+  input_label: biolink:ChemicalOrDrugOrTreatment
+  is_a: biological entity
+  preferred_id: id
+  properties:
+    label: str
+    sbgn_glyph_class: str
+    source_file: str
+
+biological process:
+  represented_as: node
+  input_label: biolink:BiologicalProcess
+  is_a: biological process or activity
+  preferred_id: id
+  properties:
+    label: str
+    sbgn_glyph_class: str
+    compartment: str
+    source_file: str
+    is_reified_process: bool
+
+phenotypic feature:
+  represented_as: node
+  input_label: biolink:PhenotypicFeature
+  is_a: biological entity
+  preferred_id: id
+  properties:
+    label: str
+    sbgn_glyph_class: str
+    source_file: str
+
+cellular component:
+  represented_as: node
+  input_label: biolink:CellularComponent
+  is_a: biological entity
+  preferred_id: id
+  properties:
+    label: str
+    sbgn_glyph_class: str
+    source_file: str
+
+# ------------------------------------------------------------------- edges
+
+has input:
+  represented_as: edge
+  input_label: biolink:has_input
+  is_a: related to
+  source: molecular entity
+  target: biological process
+  properties:
+    sbgn_arc_class: str
+    source_file: str
+
+has output:
+  represented_as: edge
+  input_label: biolink:has_output
+  is_a: related to
+  source: biological process
+  target: molecular entity
+  properties:
+    sbgn_arc_class: str
+    source_file: str
+
+catalyzes:
+  represented_as: edge
+  input_label: biolink:catalyzes
+  is_a: related to
+  source: macromolecular machine mixin
+  target: biological process
+  properties:
+    sbgn_arc_class: str
+    source_file: str
+
+regulates:
+  represented_as: edge
+  input_label: biolink:regulates
+  is_a: related to
+  source: biological entity
+  target: biological process
+  properties:
+    sbgn_arc_class: str
+    source_file: str
+
+positively regulates:
+  represented_as: edge
+  input_label: biolink:positively_regulates
+  is_a: regulates
+  source: biological entity
+  target: biological process
+  properties:
+    sbgn_arc_class: str
+    source_file: str
+    necessary: bool
+
+negatively regulates:
+  represented_as: edge
+  input_label: biolink:negatively_regulates
+  is_a: regulates
+  source: biological entity
+  target: biological process
+  properties:
+    sbgn_arc_class: str
+    source_file: str
+
+same as:
+  represented_as: edge
+  input_label: biolink:same_as
+  is_a: related to
+  source: biological entity
+  target: biological entity
+  properties:
+    sbgn_arc_class: str
+    source_file: str
