@@ -2,7 +2,7 @@
 
 A [BioCypher](https://biocypher.org) adapter for **SBGN Process Description** pathway data. Turns SBGN-ML files (as exported by [Newt](https://newteditor.org), Reactome, VANTED, or any other SBGN-PD tool) into a [Biolink](https://biolink.github.io/biolink-model/)-aligned biomedical knowledge graph, with tunable entity matching across sources.
 
-Built as a working demonstration alongside a PhD cold-outreach to the [Lobentanzer group at Helmholtz Munich](https://www.helmholtz-munich.de/icb/sebastian-lobentanzer), whose BioCypher framework this adapter plugs into.
+Follows the [biocypher/project-template](https://github.com/biocypher/project-template) adapter conventions and the [Biolink model](https://biolink.github.io/biolink-model/) at the schema layer.
 
 ## What this adapter does
 
