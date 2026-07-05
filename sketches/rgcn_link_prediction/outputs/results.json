@@ -1,0 +1,37 @@
+{
+  "graph": {
+    "num_nodes": 14,
+    "num_relations": 3,
+    "relation_names": [
+      "biolink:catalyzes",
+      "biolink:has_input",
+      "biolink:has_output"
+    ],
+    "per_relation_counts": {
+      "biolink:has_input": 5,
+      "biolink:has_output": 4,
+      "biolink:catalyzes": 3
+    },
+    "num_edges": 12,
+    "splits": {
+      "train": 10,
+      "val": 1,
+      "test": 1
+    }
+  },
+  "test_metrics": {
+    "mrr": 0.2,
+    "hits@1": 0.0,
+    "hits@3": 0.0,
+    "hits@10": 1.0
+  },
+  "best_val_mrr": 0.5,
+  "config": {
+    "epochs": 300,
+    "hidden_dim": 32,
+    "num_bases": 2,
+    "lr": 0.01,
+    "num_neg": 5,
+    "seed": 42
+  }
+}
