@@ -8,7 +8,7 @@
 
 ## The confusion I want to clear
 
-An earlier framing claimed that my adapter and the soft-manifolds work of Marinoni, Liò, Barp, Jutten, and Girolami (*IEEE TPAMI* 2026) both refuse to let structural information disappear into a training loss. That is right in spirit and wrong in detail. The two moves are not on the same axis. This note names what each axis actually is, where they meet, where they do not, and where the message-passing encoder can undo what the graph carefully preserved.
+An earlier framing claimed that my adapter and the soft-manifolds work of Marinoni, Liò, Barp, and Girolami (*IEEE TPAMI* 2026) both refuse to let structural information disappear into a training loss. That is right in spirit and wrong in detail. The two moves are not on the same axis. This note names what each axis actually is, where they meet, where they do not, and where the message-passing encoder can undo what the graph carefully preserved.
 
 ## Axis 1. Reification. A schema-level lossy-compression fix.
 
@@ -109,7 +109,7 @@ Three things this note does not attempt but a topological-ML reader would raise.
 
 ## References
 
-- Marinoni, Liò, Barp, Jutten, Girolami. *Improving Embedding of Graphs With Missing Data by Soft Manifolds*. IEEE Transactions on Pattern Analysis and Machine Intelligence 48(3), 2221-2235, 2026.
+- Marinoni, Liò, Barp, Girolami. *Improving Embedding of Graphs With Missing Data by Soft Manifolds*. IEEE Transactions on Pattern Analysis and Machine Intelligence 48(3), 2221-2235, 2026.
 - Schlichtkrull, Kipf, Bloem, van den Berg, Titov, Welling. *Modeling Relational Data with Graph Convolutional Networks*. Extended Semantic Web Conference, 2018.
 - Yang, Yih, He, Gao, Deng. *Embedding Entities and Relations for Learning and Inference in Knowledge Bases*. International Conference on Learning Representations, 2015.
 - Barcelo, Galkin, Morris, Orth. *Weisfeiler and Leman Go Relational*. Learning on Graphs Conference, 2022.
