@@ -44,8 +44,8 @@ Invocation used to produce these results. `python run_pilot_v2.py --num-nodes 80
 
 Reading with the preregistered decision rule from `PREREGISTRATION.md` Section 10.
 
-- **T vs F under Condition A.** F wins. Case IV (F significantly greater than T), which the preregistration commits to reporting with a follow-up ablation on `num_bases`. Consistent with v1. The `num_bases` ablation is deferred to the Reactome-scale run where a Case IV outcome would carry more weight than at 800 synthetic nodes.
-- **T vs F-large under Condition B.** F-large wins. Case IV. Consistent with v1.
+- **T vs F under Condition A.** Primary Wilcoxon (H1: T greater than F) fails to reject at p equal to 1.000. Diagnostic Wilcoxon in the complementary direction (H1: F greater than T) is significant at p close to zero. Under revised `PREREGISTRATION.md` Section 10, this is Case IVa (F significantly greater than T under Condition A). The preregistered follow-up is a `num_bases` ablation, deferred to the Reactome-scale run where a Case IVa outcome would carry more weight than at 800 synthetic nodes.
+- **T vs F-large under Condition B.** Primary Wilcoxon fails to reject at p equal to 0.990. Diagnostic Wilcoxon is significant at p approximately 0.010. Because Condition A also reached Case IV, v2's outcome is Case IVa (typing actively harms on this substrate), whereas v1's outcome was Case IVb (capacity beats typing while F did not significantly beat T at Condition A).
 - **T+topo vs T (the topological intervention on the typed encoder).** Mean improvement of +0.0017 in MRR, medium effect size (d=+0.49), but not statistically significant at alpha 0.05 (Wilcoxon one-sided p=0.116). This is a **suggestive positive direction that does not reach significance** at pilot scale with pilot data.
 - **T+topo vs F-large.** F-large still wins significantly. The topological signature does not lift T+topo above the flat-with-more-capacity baseline on this substrate.
 

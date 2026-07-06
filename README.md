@@ -7,10 +7,10 @@ Follows the [biocypher/project-template](https://github.com/biocypher/project-te
 ## What this adapter does
 
 1. **Parses SBGN-ML** into a flat, adapter-friendly representation (`sbgn_ml_parser.py`).
-2. **Maps SBGN-PD glyphs and arcs to Biolink categories and predicates** (`biolink_mapper.py`). The mapping is explicit and documented row-by-row so it is easy to extend and to argue about.
-3. **Reifies process nodes** so the SBGN n-ary process semantics survive translation to Biolink's predominantly binary predicate model.
+2. **Maps SBGN-PD glyphs and arcs to Biolink categories and predicates** (`biolink_mapper.py`). The mapping is explicit and documented row-by-row so it is easy to extend and to argue about. The adapter accepts the seven SBGN-PD Level 1 flow-and-modulation arc classes (`consumption`, `production`, `catalysis`, `modulation`, `stimulation`, `necessary stimulation`, `inhibition`) plus `logic arc` and `equivalence arc`. These collapse onto six distinct Biolink predicates (`has_input`, `has_output`, `catalyzes`, `regulates`, `positively_regulates`, `negatively_regulates`), with `necessary stimulation` distinguished from plain `stimulation` by a `necessary=true` edge property rather than a separate predicate. See `docs/sbgn_to_biolink_mapping.md` for the row-by-row table.
+3. **Reifies process glyphs as `biolink:BiologicalProcess` nodes** so SBGN's effectively n-ary process semantics survive translation to Biolink's predominantly binary predicate model. Participants attach via directional predicates (`has_input`, `has_output`, `catalyzes`, `regulates`, `positively_regulates`, `negatively_regulates`) set by the arc class in the source SBGN-ML. See `docs/design.md#process-reification` for the argument against the pairwise-expansion alternative, and `sketches/reification_vs_missingness/NOTE.md` for the carve-out of which SBGN-PD process-glyph subtypes are genuinely n-ary versus fixed-arity or unary.
 4. **Matches entities across sources** with a similarity-threshold rule (`entity_matcher.py`) so the same molecule appearing under different labels in two SBGN-ML files does not become two knowledge-graph nodes. Every merge is recorded with a scored explanation for auditability.
-5. **Yields BioCypher-shaped node and edge tuples** via `SBGNPDAdapter.get_nodes()` and `SBGNPDAdapter.get_edges()`. The BioCypher core then writes admin-import CSVs (or emits any other output the BioCypher ecosystem supports).
+5. **Yields BioCypher-shaped node and edge tuples** via `SBGNPDAdapter.get_nodes()` and `SBGNPDAdapter.get_edges()`. The BioCypher core then routes those tuples to whichever backend the runtime config selects. The default demo pipeline writes Neo4j admin-import CSVs, but the same adapter output feeds BioCypher's PyG, RDF, or plain-CSV writers without any adapter-side changes.
 
 ## Repository layout
 
@@ -76,12 +76,12 @@ SBGN-PD adapter report
 BioCypher then writes:
 
 - `SmallMolecule-part001.csv` (6 rows)
-- `MacromolecularMachineMixin-part001.csv` (3 rows: HK2, GPI, PFK1)
+- `MacromolecularMachineMixin-part001.csv` (3 rows for HK2, GPI, PFK1)
 - `BiologicalProcess-part001.csv` (3 reified processes)
-- `CellularComponent-part001.csv` (2 cytosol compartments; note these do *not* merge because they carry no cross-refs)
-- `HasInput`, `HasOutput`, `Catalyzes` edge CSVs
+- `CellularComponent-part001.csv` (2 cytosol compartments. Note these do *not* merge because they carry no cross-refs.)
+- `HasInput`, `HasOutput`, `Catalyzes`, and `Regulates` (when modulation arcs are present) edge CSVs
 
-The neo4j-admin-import script is regenerated on every run; point it at your Neo4j instance to load.
+Swapping Neo4j for a different BioCypher output backend is a `biocypher_config.yaml` change, not an adapter change. The neo4j-admin-import script is regenerated on every run. Point it at your Neo4j instance to load.
 
 ## The entity-matcher, in detail
 
@@ -100,20 +100,28 @@ The matcher enforces contract-style invariants:
 - No self-loops (a glyph does not merge with itself).
 - No cross-class merges (a `macromolecule` never collapses with a `simple chemical`, even if labels match).
 - Traversal budget cap (`max_pairs_per_glyph`, default 32) so pathological inputs do not blow up runtime.
-- Every merge decision is recorded on `matcher.decisions` with its score breakdown, so the pipeline is fully auditable.
+- Every merge decision is recorded on `matcher.decisions` with its score breakdown, so every merge is auditable end-to-end.
 
 ## Extending
 
 - **New SBGN-PD glyph class**: add a row to `GLYPH_TO_BIOLINK` in `biolink_mapper.py` and a corresponding entry in `config/schema_config.yaml`. Add the enum value to `SBGNPDGlyphClass` in `adapter.py`.
 - **New arc type**: same pattern with `ARC_TO_BIOLINK` and `SBGNPDArcType`.
-- **Different Biolink target**: change the `category` field in the mapping table; the schema config's `is_a` chain does the rest.
+- **Different Biolink target**. Change the `category` field in the mapping table. The schema config's `is_a` chain does the rest.
 - **New data source (e.g. Reactome bulk import)**: drop SBGN-ML files under `data/` and re-run. The adapter recurses so subdirectories are fine.
 
 ## Design decisions worth reading
 
-- Process reification vs pairwise expansion — see `docs/design.md#process-reification`.
-- Threshold defaults and the label / annotation / compartment weight split — see `docs/design.md#entity-matcher-defaults`.
-- Why the parser stays in the standard library — see `docs/design.md#no-dependencies`.
+- Process reification vs pairwise expansion. See `docs/design.md#process-reification`.
+- Threshold defaults and the label / annotation / compartment weight split. See `docs/design.md#entity-matcher-defaults`.
+- Why the parser stays in the standard library. See `docs/design.md#no-non-standard-library-parser`.
+
+## Experimental follow-ups
+
+Three exploratory sketches live under `sketches/`. They are not required to run the adapter and are excluded from the core test suite. They exist to show what a downstream user might build on top.
+
+- [`sketches/rgcn_link_prediction/`](sketches/rgcn_link_prediction/) contains an R-GCN link-prediction pipeline over the adapter's output. Includes a frozen [`PREREGISTRATION.md`](sketches/rgcn_link_prediction/PREREGISTRATION.md) for a typed-versus-flat relation comparison at Reactome scale, plus two pilot runs at synthetic scale ([`PILOT_RESULTS.md`](sketches/rgcn_link_prediction/PILOT_RESULTS.md), [`PILOT_V2_RESULTS.md`](sketches/rgcn_link_prediction/PILOT_V2_RESULTS.md)).
+- [`sketches/topological_followup/DESIGN_NOTE.md`](sketches/topological_followup/DESIGN_NOTE.md) is a design memo on directed topological descriptors (persistent path homology after Chowdhury and Mémoli 2018, directed flag complexes after Lütgehetmann et al. 2020) as a complementary view to R-GCN. Working memo, not a preregistration.
+- [`sketches/reification_vs_missingness/NOTE.md`](sketches/reification_vs_missingness/NOTE.md) disentangles the schema-level lossy-compression fix (reification, this adapter) from the embedding-space geometry fix (soft manifolds after Marinoni et al. 2026 TPAMI), and names four testable predictions about how the two axes compose.
 
 ## Provenance
 
