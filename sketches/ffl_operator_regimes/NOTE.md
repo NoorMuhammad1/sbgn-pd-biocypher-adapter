@@ -67,6 +67,8 @@ a factor-of-2 sign-flipped vector. Under the participant-projected graph, `i` is
 
 **Reading.** For a standard R-GCN over the reified SBGN-PD graph, coherent and incoherent feedforward loops appear distinguishable at the graph-level readout under the argument above. The failure mode this note originally worried about (embeddings identical up to a sign flip absorbed by a symmetric readout) requires a specific untyped-flat encoder configuration that a preregistered R-GCN would not use. This is a concession relative to the design memo's earlier framing and is corrected here.
 
+**Verified in code.** The Regime A argument is now checked empirically by [`rgcn_ffl_demo.py`](rgcn_ffl_demo.py) in this directory. The script builds a C1 and an I1 FFL on three nodes, runs a signed R-GCN layer on each, and confirms that (i) the per-node pre-nonlinearity difference is zero everywhere except at target node `t`, (ii) the observed delta at `t` matches `2 * (1 / c_{t,r}) * W_r^(0) * h_i^(0)` to numerical precision, and (iii) the graph-level mean-readout difference matches `delta_t / 3`. Regimes B and C remain paper reading and are not implemented here.
+
 ## 4. Regime B. Sign-aware simplicial neural network
 
 **Operator.** Ebli, Defferrard, Spreemann 2020 (*Simplicial Neural Networks*, NeurIPS 2020 Workshop on Topological Data Analysis and Beyond) introduced the SNN as Hodge-Laplacian polynomial operators on oriented simplicial complexes. Bodnar, Frasca, Wang, Otter, Montúfar, Liò, Bronstein 2021 (*Weisfeiler and Lehman Go Topological. Message Passing Simplicial Networks*, ICML 2021) generalised the construction to message passing on faces and cofaces (MPSN) and formalised the orientation-equivariance property that the earlier Ebli operators possess implicitly. Bodnar's Section 4 gives the informal Theorem 14 (an MPSN layer with orientation-multiplied messages and odd nonlinearities is orientation equivariant), with the formal treatment in Appendix D (Def. 36 for the orientation transformation `T H = (T_0 H_0, T_1 H_1, ...)`, Prop. 39 for the equivariance of message-passing under `T`, and Lemma 40 for the invariance of orientation-invariant readouts). Bodnar's own Appendix C notes that "the orientation equivariance properties of the convolutional operators from Ebli et al. (2020) and Bunch et al. (2020) were not considered" when those papers were introduced, so the equivariance framing here belongs to Bodnar rather than to Ebli.
@@ -114,7 +116,7 @@ The preregistered comparison would need its own protocol file, `PREREGISTRATION-
 ## 7. What this memo is not
 
 - It is not a preregistration. Any experimental commitment lives in a separate `PREREGISTRATION-ffl.md`.
-- It is not a claim that I have implemented any of the three operators. I have not. Every operator in Sections 3, 4, and 5 rests on paper reading.
+- It is not a claim that I have implemented all three operators. Regime A (signed R-GCN, Section 3) is implemented in [`rgcn_ffl_demo.py`](rgcn_ffl_demo.py) and the arithmetic is checked to numerical precision. Regimes B and C (Sections 4 and 5) rest on paper reading, not code.
 - It is not a critique of Ebli 2020, Bodnar 2021, or Lecha 2025. Those papers are the theoretical starting points. This memo is about what happens when the same question is taken onto directed typed pathway data.
 - It is not a proof that C1 and I1 are distinguishable in regime C. It is a specification of the empirical test that would settle the question.
 
