@@ -96,7 +96,7 @@ class SBGNPDGlyphClass(Enum):
     NOT = auto()
 
     @classmethod
-    def from_string(cls, name: str) -> "SBGNPDGlyphClass | None":
+    def from_string(cls, name: str) -> SBGNPDGlyphClass | None:
         canonical = name.strip().lower().replace(" ", "_")
         return cls.__members__.get(canonical.upper())
 
@@ -115,7 +115,7 @@ class SBGNPDArcType(Enum):
     EQUIVALENCE_ARC = auto()
 
     @classmethod
-    def from_string(cls, name: str) -> "SBGNPDArcType | None":
+    def from_string(cls, name: str) -> SBGNPDArcType | None:
         canonical = name.strip().lower().replace(" ", "_")
         return cls.__members__.get(canonical.upper())
 

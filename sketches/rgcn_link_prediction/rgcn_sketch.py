@@ -36,7 +36,6 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 from sbgn_pd_adapter import SBGNPDAdapter  # noqa: E402
 
-
 # ---------- data preparation ----------
 
 def build_graph(sbgn_files, matcher_threshold=0.7):

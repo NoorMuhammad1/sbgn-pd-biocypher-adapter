@@ -39,6 +39,13 @@ target-version = "py310"
 select = ["E", "F", "W", "I", "N", "UP", "B", "SIM"]
 ignore = ["E501"]
 
+[tool.ruff.lint.per-file-ignores]
+# ML sketches legitimately use uppercase matrix / tensor names (H, W, N, D)
+# and the torch.nn.functional-as-F convention. Also they use sys.path
+# manipulation before local imports to run as standalone scripts. Keep the
+# strict naming rules for the main sbgn_pd_adapter package.
+"sketches/**" = ["N803", "N806", "N812", "E402", "B905"]
+
 [tool.mypy]
 python_version = "3.10"
 strict_optional = true

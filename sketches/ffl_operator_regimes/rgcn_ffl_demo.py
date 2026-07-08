@@ -54,7 +54,7 @@ def signed_rgcn_layer(H, W_r, signs, node_index):
     out = torch.zeros_like(H)
 
     in_degree = {}
-    for (u, v) in edges:
+    for (_u, v) in edges:
         in_degree[v] = in_degree.get(v, 0) + 1
 
     for (u, v) in edges:

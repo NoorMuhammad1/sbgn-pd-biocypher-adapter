@@ -34,8 +34,6 @@ from pathlib import Path
 
 import numpy as np
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
 from matplotlib import pyplot as plt
 from scipy import stats
 
@@ -47,11 +45,9 @@ from rgcn_sketch import (
     RGCNLinkPredictor,
     edge_index_per_relation,
     evaluate,
-    sample_negatives,
     split_triples,
     train_step,
 )
-
 
 # ---------- synthetic SBGN-PD-like graph ----------
 
@@ -228,7 +224,6 @@ def main():
     )
 
     typed_triples = graph["triples"]
-    flat_triples = flatten_triples(typed_triples, args.num_relations)
     train_t, val_t, test_t = split_triples(typed_triples, seed=args.graph_seed)
     train_f = [(s, 0, o) for s, _, o in train_t]
     val_f = [(s, 0, o) for s, _, o in val_t]
@@ -296,7 +291,7 @@ def main():
         try:
             w = stats.wilcoxon(va, vb, alternative="greater")
             wilc_stat, wilc_p = float(w.statistic), float(w.pvalue)
-        except Exception as e:
+        except Exception:
             wilc_stat, wilc_p = None, None
         try:
             t = stats.ttest_rel(va, vb, alternative="greater")

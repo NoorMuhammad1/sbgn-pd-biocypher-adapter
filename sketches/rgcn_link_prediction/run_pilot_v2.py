@@ -55,12 +55,10 @@ from rgcn_sketch import (
     split_triples,
 )
 from run_pilot import (
-    make_synthetic_sbgn_graph,
-    flatten_triples,
     count_parameters,
     find_matched_hidden_dim,
+    make_synthetic_sbgn_graph,
 )
-
 
 # ---------- topological descriptor: per-node per-relation degree signature ----------
 
@@ -262,7 +260,6 @@ def main():
     )
 
     typed = graph["triples"]
-    flat = flatten_triples(typed, args.num_relations)
     train_t, val_t, test_t = split_triples(typed, seed=args.graph_seed)
     train_f = [(s, 0, o) for s, _, o in train_t]
     val_f = [(s, 0, o) for s, _, o in val_t]
