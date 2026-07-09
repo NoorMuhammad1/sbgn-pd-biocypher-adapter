@@ -89,7 +89,18 @@ def run(
     bc.write_nodes(adapter.get_nodes())
     bc.write_edges(adapter.get_edges())
     bc.write_import_call()
-    bc.summary()
+    # bc.summary() prints an ANSI-decorated ontology tree that hangs on
+    # non-TTY runners (GitHub Actions kills the job at the 6h ceiling).
+    # The CSV output and admin-import script above are the actual E2E
+    # deliverables, so we skip the visualisation in non-TTY environments
+    # and keep it for local interactive runs.
+    if sys.stdout.isatty():
+        bc.summary()
+    else:
+        logger.info(
+            "Skipping bc.summary() ontology tree in non-TTY environment. "
+            "Run with a TTY (local terminal) to see the full tree."
+        )
     logger.info(
         "adapter final report after BioCypher write:\n%s", adapter.report()
     )
